@@ -19,8 +19,8 @@ import matplotlib.pyplot as plt
 
 #%%
 # input 
-FC_result_folder = ('FC_results\pipeline') #fill in the name of the folder with the functional connectivity result files
-participants = ['108076195', '108076186', '116014859'] # give a list of participant numbers to include (currently only applied to correlations)
+FC_result_folder = ('FC_results') #fill in the name of the folder with the functional connectivity result files
+participants = ['123456', '234567', '345678'] # give a list of participant numbers to include (currently only applied to correlations)
 age_categories = {'1': 'red', '2': 'green', '3': 'blue'} # age categories plots
 ages = np.array(['1', '2', '3']) # ages of the participants in same order as numbers
 PSI_scores = [21, 22, 23] # PSI_scores of the participant in same order as numbers
