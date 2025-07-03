@@ -9,7 +9,7 @@
 # given in a list with the same order as the participants numbers. 
 
 #%%
-#import required toolboxes
+# import required toolboxes
 import os
 import numpy as np
 from scipy.stats import ttest_rel, spearmanr
@@ -19,13 +19,14 @@ import matplotlib.pyplot as plt
 
 #%%
 # input 
-FC_result_folder = ('FC_results') #fill in the name of the folder with the functional connectivity result files
-participants = ['123456', '234567', '345678'] # give a list of participant numbers to include (currently only applied to correlations)
+FC_result_folder = ('FC_results\pipeline') #fill in the name of the folder with the functional connectivity result files
+participants = ['108076195', '108076186', '116014859'] # give a list of participant numbers to include (currently only applied to correlations)
 age_categories = {'1': 'red', '2': 'green', '3': 'blue'} # age categories plots
 ages = np.array(['1', '2', '3']) # ages of the participants in same order as numbers
 PSI_scores = [21, 22, 23] # PSI_scores of the participant in same order as numbers
 clinical_iapf_assessment = [8, 9, 10] # add the clinical assessment of iapf if required (also automated assessment available in FC-results file)
-# %% 
+
+#%% 
 # 1. paired t-tests for comparison eyes open and closed functional connectivity (Berger effect)
 all_files_from_folder = os.listdir(FC_result_folder)
 all_FC_result_files = [x for x in all_files_from_folder if x.endswith("functional_connectivity_results.npz")]
@@ -39,14 +40,14 @@ for file in all_FC_result_files:
     path = os.path.join(FC_result_folder, file)
     data = np.load(path, allow_pickle=True)
     a_open = data['lobe_connectivity'].item()['alpha_open']
-    a_occi_open.append((np.sum(a_open[3,0:3]) + np.sum(a_open[4:6,3]))/5)
+    a_occ_open.append((np.sum(a_open[3,0:3]) + np.sum(a_open[4:6,3]))/5)
     a_closed = data['lobe_connectivity'].item()['alpha_closed']
-    a_occi_closed.append((np.sum(a_closed[3,0:3]) + np.sum(a_closed[4:6,3]))/5)
+    a_occ_closed.append((np.sum(a_closed[3,0:3]) + np.sum(a_closed[4:6,3]))/5)
     a_ih_open.append(data['hemisphere_connectivity'].item()['alpha_open']['between'])
     a_ih_closed.append(data['hemisphere_connectivity'].item()['alpha_closed']['between'])
 
-t_stat_occ, p_val_occ = ttest_rel(a_occ_closed, a_occ_open)
-t_stat_hem, p_val_hem = ttest_rel(a_ih_closed, a_ih_open)
+t_stat_occ, p_val_occ = ttest_rel(a_occ_open, a_occ_closed)
+t_stat_hem, p_val_hem = ttest_rel(a_ih_open, a_ih_closed)
 
 print("\nResults paired t-tests:")
 print(f"\nOccipital connectivity difference between eyes open and eyes closed:")
@@ -58,7 +59,7 @@ print(f"p_value: {p_val_hem}")
 
 #%%
 # 2. correlations functional connectivity and network metrics 
-br_ih_closed_ = []
+br_ih_closed = []
 br_of_closed = []
 br_mst_d_closed = []
 br_mst_lf_closed = []
@@ -105,7 +106,7 @@ for i, ax in enumerate(axs1.flatten()):
     r, p = spearmanr(x, y)
     for age, color in age_categories.items():
         mask = ages == age
-        ax.scatter(x[mask], y[mask], label=cat, color=color)
+        ax.scatter(x[mask], y[mask], label=age, color=color)
     coefficients = np.polyfit(x,y,1)
     trendline = np.poly1d(coefficients)
     ax.plot(x, trendline(x), color='gray', alpha=0.5, label='Trendline')
@@ -123,7 +124,7 @@ for i, ax in enumerate(axs2.flatten()):
     r, p = spearmanr(x, y)
     for age, color in age_categories.items():
         mask = ages == age
-        ax.scatter(x[mask], y[mask], label=cat, color=color)
+        ax.scatter(x[mask], y[mask], label=age, color=color)
     coefficients = np.polyfit(x,y,1)
     trendline = np.poly1d(coefficients)
     ax.plot(x, trendline(x), color='gray', alpha=0.5, label='Trendline')
@@ -142,7 +143,7 @@ y = np.array(clinical_iapf_assessment)
 r, p = spearmanr(x, y)
 for age, color in age_categories.items():
     mask = ages == age
-    ax.scatter(x[mask], y[mask], label=cat, color=color)
+    plt.scatter(x[mask], y[mask], label=age, color=color)
 coefficients = np.polyfit(x,y,1)
 trendline = np.poly1d(coefficients)
 #plt.plot(x, trendline(x), color='gray', alpha=0.5, label='Trendline') #optionally
