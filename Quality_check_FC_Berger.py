@@ -1,15 +1,15 @@
 ## Code for quality check of functional connectivity analysis by Berger effect
-# This code will make three figures per participant to inspect the differences in functional connectivity between eyes open 
-# and eyes closed resting state. This code can be applied to multiple participants and the figures will be showed/saved as 
-# one figure with three subplots per participant:
+# This code will make three figures per measurement to inspect the differences in functional connectivity between eyes open 
+# and eyes closed resting state. This code can be applied to multiple measurements and the figures will be showed/saved as 
+# one figure with three subplots per measurement:
 #   1. Alpha power spectra for both conditions
 #   2. Difference between te conditions in alpha connectivity on lobe level 
 #   3. Difference between te conditions in alpha connectivity on hemisphere level 
 
-# all functional connectivity measurements will be extracted from the results file created by the FC-analysis.py script. 
+# all functional connectivity measurements will be extracted from the results file created by the FC_analysis.py script. 
 # The measurements to include can be given by a list (the correct results files will be searched for in the assigned folder)
-# or all the results files in the assigned folder can be used (also with the option to only analyze the new files). The spectra are calculated from the preprocessed EEG files 
-# with the corresponding participant number. 
+# or all the results files in the assigned folder can be used (also with the option to only analyze the new files). 
+# The spectra are calculated from the preprocessed EEG files with the corresponding participant number. 
 
 #%% 
 # import required toolboxes
