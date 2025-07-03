@@ -39,7 +39,6 @@ montage = mne.channels.make_standard_montage("GSN-HydroCel-128")
 #%% 
 # define required functions
 
-# Define function to extract segments from raw data
 def extract_segments(raw, periods):
     """Extract and concatenate segments from raw data based on start/end times."""
     epochs = []
@@ -48,7 +47,6 @@ def extract_segments(raw, periods):
         epochs.append(segment.get_data())
     return np.concatenate(epochs, axis=1)
 
-# Define function to identify eyes open/closed periods from annotations
 def identify_periods(raw):
     """Identify eyes open and eyes closed periods from annotations."""
     annotations = raw.annotations
@@ -80,7 +78,7 @@ for measurement in measurements:
     print(f"Processing measurement of {measurement.split('_')[0]} on {measurement.split('_')[1]}")
 
     # Extract subject ID from filename
-    subject_id = eeg_file.split('_')[0] + '_' + eeg_file.split('_')[1]
+    subject_id = measurement.split('_')[0] + '_' + measurement.split('_')[1]
 
     ''' uncomment if only new files in the folder should be analyzed
     if os.path.exists(ouput_dir + "/" + subject_id + "_difference_open_closed.png"):
