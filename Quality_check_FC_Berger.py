@@ -19,6 +19,8 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
+from Functions_load_data import extract_segments, identify_periods # custom functions
+
 %matplotlib Tk
 
 #%% 
@@ -35,41 +37,6 @@ measurements = [x for x in all_files_from_folder if x.endswith("functional_conne
 '''
 
 montage = mne.channels.make_standard_montage("GSN-HydroCel-128")
-
-#%% 
-# define required functions
-
-def extract_segments(raw, periods):
-    """Extract and concatenate segments from raw data based on start/end times."""
-    epochs = []
-    for start, stop in periods:
-        segment = raw.copy().crop(tmin=max(0, start), tmax=min(stop, raw.times[-1]))
-        epochs.append(segment.get_data())
-    return np.concatenate(epochs, axis=1)
-
-def identify_periods(raw):
-    """Identify eyes open and eyes closed periods from annotations."""
-    annotations = raw.annotations
-    starts = annotations.onset
-    labels = annotations.description
-
-    open_periods = []
-    closed_periods = []
-    
-    for i in range(len(starts)-1):
-        onset = starts[i]
-        offset = starts[i + 1]
-        label = labels[i].lower()
-
-        if 'eyes open' in label: 
-            open_periods.append((onset, offset))
-        elif 'eyes closed' in label:
-            closed_periods.append((onset, offset))
-
-    if not open_periods and not closed_periods:
-        raise ValueError("No eyes open or eyes closed periods found in annotations")
-        
-    return open_periods, closed_periods
 
 #%% 
 # main analysis
