@@ -14,8 +14,7 @@
 #   * hemisphere_connectivity: the left and right intrahemispheric and the interhemishperic PLI for both eyes open and closed conditions for each frequency band  
 #   * minimum_spanning_tree: the MST with its diameter and leaf fraction for both eyes open and closed conditions for each frequency band  
 #   * iapf
-# The measurements to include can be given by a list (the correct results files will be searched for in the assigned folder)
-# or all the results files in the assigned folder can be used (also with the option to only analyze the new files). 
+# The measurements to include can be given by assigning a folder, also with the option to only analyze the new files in the folder. 
 
 #%% 
 # import required toolboxes
