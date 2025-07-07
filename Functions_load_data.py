@@ -7,6 +7,7 @@
 #   6. extract_segments: extracts and concatenate segments from raw data based on start/end times
 #   7. identify_periods: identifies eyes open and eyes closed periods from annotations 
 #   8. create_cropped_raw: creates a cropped EEG file only containing test conditions, excludes explanation and practice conditions 
+#   9. plot_clinical_eeg: plots clinical representation of the eeg with 19 electrodes 
 # The functions can be used in other scripts by using "from Functions_load_data import {name function}"
 
 # import required toolboxes 
@@ -16,6 +17,87 @@ import datetime
 import os
 import numpy as np
 import pandas as pd
+
+# electrode dictionary 
+
+elec_dict = {
+    "Electrode_1020": [
+        "Fp1",
+        "Fp2",
+        "F8",
+        "T8",
+        "P8",
+        "O2",
+        "F4",
+        "C4",
+        "P4",
+        "F7",
+        "T7",
+        "P7",
+        "O1",
+        "F3",
+        "C3",
+        "P3",
+        "Fz",
+        "Cz",
+        "Pz",
+        "A1",
+        "A2",
+        "F9",
+        "F10",
+    ],
+    "Nearest_GSN128_Electrode": [
+        "E25",
+        "E8",
+        "E122",
+        "E108",
+        "E96",
+        "E83",
+        "E124",
+        "E93",
+        "E85",
+        "E33",
+        "E45",
+        "E58",
+        "E70",
+        "E24",
+        "E42",
+        "E60",
+        "E5",
+        "E55",
+        "E62",
+        "E56",
+        "E107",
+        "E128",
+        "E125",
+    ],
+    "Euclidean_distance": [
+        0.0181938809601634,
+        0.0176452325197104,
+        0.0089669908600607,
+        0.0083647875506258,
+        0.0135919495402834,
+        0.0199487986966936,
+        0.0131432801580241,
+        0.0147307838528649,
+        0.0171061405883185,
+        0.0079340633237886,
+        0.0070493993629348,
+        0.0135507499479835,
+        0.0202399853227704,
+        0.0132476077609949,
+        0.0137353713471133,
+        0.0157772903771991,
+        0.0175867303133565,
+        0.014875549884968,
+        0.0154002610447424,
+        0.0205018854175188,
+        0.020251510805766,
+        0.0085717364085546,
+        0.0094661620206614,
+    ],
+}
+elec = pd.DataFrame.from_dict(elec_dict)
 
 # Functions
 
@@ -390,3 +472,29 @@ def create_cropped_raw(raw, events, event_dict, log = False):
     else:
         print("No test conditions found, returning full recording")
         return raw.copy()
+
+def plot_clinical_eeg(raw, start, title, elloc=elec):
+    # Function to plot the average EEG data (23 channels), with a bandpass filter applied.
+    %matplotlib Tk
+    clinselect = raw.copy()
+    clinselect.pick(picks=elloc["Nearest_GSN128_Electrode"].to_list())
+
+    # Rename the electrodes
+    elnames = dict(
+        zip(
+            elloc["Nearest_GSN128_Electrode"].to_list(),
+            elloc["Electrode_1020"].to_list(),
+        )
+    )
+
+    clinselect.rename_channels(elnames, verbose='CRITICAL')
+
+    # Invert amplitudes
+    raw_info = clinselect.info
+    raw_array = clinselect[:, :]
+    raw_data = raw_array[0]
+    raw_invert = -1 * raw_data
+
+    raw_inv = mne.io.RawArray(raw_invert, raw_info) 
+
+    raw_inv.plot(duration=15, n_channels=23, start=start, clipping=None, splash=False, overview_mode='hidden', theme='light', title = title)
